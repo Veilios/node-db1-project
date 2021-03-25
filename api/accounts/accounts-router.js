@@ -1,11 +1,21 @@
-const router = require('express').Router()
+const router = require('express').Router();
+const Accounts = require('./accounts-model');
+const middleware = require('./accounts-middleware');
 
 router.get('/', async (req, res, next) => {
   // DO YOUR MAGIC
-})
+  Accounts.getAll()
+    .then(accounts => {
+      res.status(200).json(accounts);
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error retrieving Accounts", error: err});
+    });
+});
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', middleware.checkAccountId(), (req, res, next) => {
   // DO YOUR MAGIC
+  res.status(200).json(req);
 })
 
 router.post('/', (req, res, next) => {
