@@ -5,9 +5,19 @@ exports.checkAccountPayload = (req, res, next) => {
   try {
     if(req.body && Object.keys(req.body).length>0) {
       if(req.body.name && req.body.budget) {
-        next();
+        if(typeof req.body.name !== 'string') {
+          res.status(400).json({ message: "name of account must be a string" });
+        } else if ((req.body.name).length < 3 || (req.body.name > 100)) {
+          res.status(400).json({ message: "name of account must be between 3 and 100" });
+        } else if (typeof req.body.budget !== 'number') {
+          res.status(400).json({ message: "budget of account must be a number" });
+        } else if ((req.body.budget).length > 0 || (req.body.budget).length < 1000000) {
+          res.status(400).json({ message: "budget of account is too large or too small" });
+        } else {
+          next();
+        }
       } else {  
-        res.status(400).json({ message: "Missing required name and/or budget field" });
+        res.status(400).json({ message: "name and budget are required" });
       };
     } else {
       res.status(400).json({ message: "Missing account data" });
