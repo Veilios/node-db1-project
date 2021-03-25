@@ -8,13 +8,13 @@ const getAll = () => {
 
 const getById = id => {
   // DO YOUR MAGIC
-  const account = db('accounts').where({id}).first();
+  const account = db('accounts').where({id});
   return account;
 }
 
 const create = async account => {
   // DO YOUR MAGIC
-  const newAccount = db('posts').insert(account);
+  const newAccount = db('accounts').insert(account);
   return newAccount;
 }
 

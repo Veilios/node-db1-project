@@ -1,6 +1,7 @@
-const User = require('../accounts/accounts-model');
+const Account = require('../accounts/accounts-model');
+const { response } = require('../server');
 
-exports.checkAccountPayload = (req, res, next) => {
+const checkAccountPayload = (req, res, next) => {
   // DO YOUR MAGIC
   try {
     if(req.body && Object.keys(req.body).length>0) {
@@ -27,15 +28,15 @@ exports.checkAccountPayload = (req, res, next) => {
   }
 }
 
-exports.checkAccountNameUnique = async (req, res, next) => {
+const checkAccountNameUnique = async (req, res, next) => {
   // DO YOUR MAGIC
-  const newUser = req.body;
-  const list = await User.getAll();
+  const newAccount = req.body;
+  const list = await Account.getAll();
 
   try {
     for(let i = 0; i < list.length; i++) {
-      if(newUser.name === list[i].name) {
-        res.status(400).json({ message: "Account Name has been taken" });
+      if(newAccount.name === list[i].name) {
+        res.status(400).json({ message: "that name is taken" });
       } else {
         next();
       };
@@ -46,19 +47,19 @@ exports.checkAccountNameUnique = async (req, res, next) => {
   
 };
 
-exports.checkAccountId = async (req, res, next) => {
+const checkAccountId = async (req, res, next) => {
   // DO YOUR MAGIC
-  const {id} = req.params.id;
-  const user = await User.getById(id);
-
   try {
-    if(user) {
-      req.user = user;
+    const account = await Account.getById(req.params.id);
+    if(account) {
+      req.account = account;
       next();
     } else {
-      res.status(404).json({ message: "User not found" });
-    };
-  } catch (err) {
-    res.status(500).json({ message: "Error processing request", error: err});    
-  };
+      res.status(400).json({ message: "account not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error processing request", error: error });
+  }
 };
+
+module.exports = { checkAccountId, checkAccountNameUnique, checkAccountPayload};
