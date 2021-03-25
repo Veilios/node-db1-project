@@ -19,7 +19,22 @@ exports.checkAccountPayload = (req, res, next) => {
 
 exports.checkAccountNameUnique = async (req, res, next) => {
   // DO YOUR MAGIC
-}
+  const newUser = req.body;
+  const list = await User.getAll();
+
+  try {
+    for(let i = 0; i < list.length; i++) {
+      if(newUser.name === list[i].name) {
+        res.status(400).json({ message: "Account Name has been taken" });
+      } else {
+        next();
+      };
+    };
+  } catch (error) {
+    res.status(500).json({ message: "Error processing request", error: error });
+  };
+  
+};
 
 exports.checkAccountId = async (req, res, next) => {
   // DO YOUR MAGIC
